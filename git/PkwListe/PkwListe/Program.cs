@@ -41,6 +41,7 @@ namespace PkwListe
             pkwListe.FügePkwEin(new Pkw("Kia", "Seed", "silber"));
             Console.Write(pkwListe.Select());
             Console.WriteLine("Es gibt " + pkwListe.AnzahlPkws + " Pkws");
+            pkwListe.Delete(new Pkw("Fiat", "Panda", "rot"));
 
             Console.ReadKey();
         }
@@ -88,6 +89,49 @@ namespace PkwListe
                 tmp = tmp.GetNext();
             }
             return selectString;
+        }
+
+        public void Delete(Pkw pkw)
+        {
+            Pkw tmp = ersterPkw;
+            Pkw previousEntry = null;
+            while (tmp != null)
+            {
+                if 
+                    (
+                    pkw.GetFarbe() == tmp.GetFarbe() &&
+                    pkw.GetKmStand() == tmp.GetKmStand() &&
+                    pkw.GetMarke() == tmp.GetMarke() &&
+                    pkw.GetModell() == tmp.GetModell() &&
+                    pkw.GetType() == tmp.GetType()
+                    )
+                {
+                    if (tmp == ersterPkw)
+                    {
+                        ersterPkw = tmp.GetNext();
+                        tmp = null;
+                       
+                    }
+                    else if (tmp == letzterPkw && previousEntry == null)
+                    {
+                        tmp = null;
+                        letzterPkw = ersterPkw = null;
+                        anzahlPkws = 0;
+                    }
+                    else
+                    {
+                        previousEntry.SetNext(tmp.GetNext());
+                        tmp = null;
+                    }
+                    Console.WriteLine("Deletion Success");
+                    Console.Write("\n");
+                } else
+                {
+                    previousEntry = tmp;
+                    tmp = tmp.GetNext();
+                }
+            }
+            Console.Write(Select());
         }
     }
     class Pkw
