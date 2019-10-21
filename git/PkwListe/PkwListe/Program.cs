@@ -97,6 +97,7 @@ namespace PkwListe
             Pkw previousEntry = null;
             while (tmp != null)
             {
+
                 if 
                     (
                     pkw.GetFarbe() == tmp.GetFarbe() &&
@@ -110,7 +111,7 @@ namespace PkwListe
                     {
                         ersterPkw = tmp.GetNext();
                         tmp = null;
-                       
+                        anzahlPkws--;
                     }
                     else if (tmp == letzterPkw && previousEntry == null)
                     {
@@ -122,6 +123,7 @@ namespace PkwListe
                     {
                         previousEntry.SetNext(tmp.GetNext());
                         tmp = null;
+                        anzahlPkws--;
                     }
                     Console.WriteLine("Deletion Success");
                     Console.Write("\n");
