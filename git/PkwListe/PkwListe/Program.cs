@@ -95,6 +95,7 @@ namespace PkwListe
         {
             Pkw tmp = ersterPkw;
             Pkw previousEntry = null;
+            bool deleted = false;
             while (tmp != null)
             {
 
@@ -132,6 +133,10 @@ namespace PkwListe
                     previousEntry = tmp;
                     tmp = tmp.GetNext();
                 }
+            }
+            if (deleted == false)
+            {
+                Console.Write("List doesn't contain the Object you wish to Delete \n");
             }
             Console.Write(Select());
         }
