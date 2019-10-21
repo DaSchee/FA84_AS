@@ -23,6 +23,7 @@ class Login
             int inputLength = 0;
             int usernameInputLength = 0;
             ConsoleKeyInfo cki;
+            Console.Write("git Test");
             Console.Write("Username: ");
             while ((cki = Console.ReadKey(true)).Key != ConsoleKey.Enter)
             {
