@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+
 class Login
 {
     public static void Main(String[] args)
@@ -15,6 +16,8 @@ class Login
         char[] usernameInput = new char[50];
         int key = 65500;
         User dade = new User(username, encryptedRealPassword);
+        UserList users = new UserList();
+        users.AddUser(dade);
         // Passwort einlesen:
         bool passed = false;
        
@@ -23,7 +26,6 @@ class Login
             int inputLength = 0;
             int usernameInputLength = 0;
             ConsoleKeyInfo cki;
-            Console.Write("git Test");
             Console.Write("Username: ");
             while ((cki = Console.ReadKey(true)).Key != ConsoleKey.Enter)
             {
@@ -50,32 +52,39 @@ class Login
             encryptedInputPassword = Encrypt(inputPassword, inputLength, key);
 
             // Ausgabe des Verschlüsselten Passworts
-            // test = Encrypt(encryptedRealPassword, encryptedRealPassword.Length, -65500);
-            // Console.WriteLine(test);
+            // Console.WriteLine(Encrypt(encryptedRealPassword, encryptedRealPassword.Length, -65500));
 
             // Verschlüsselte Passwörter vergleichen:
-            if (dade.Password.Length == inputLength && dade.Username.Length == usernameInputLength)
+            users.GetUserList();
+            User existingUser = users.FindUser(new User(usernameInput, encryptedInputPassword));
+
+            if (existingUser != null)
             {
+                Console.WriteLine("Moin");
                 passed = true;
-                for (int i = 0; i < usernameInputLength && passed; i++)
-                {
-                    if (usernameInput[i] != dade.Username[i]) {
-                        passed = false;
-                    }
-                }
-                for (int i = 0; i < inputLength && passed; i++)
-                {
-                    if (encryptedInputPassword[i] != dade.Password[i])
-                    {
-                        passed = false;
-                    }
-                }
             }
+            //if (dade.Password.Length == inputLength && dade.Username.Length == usernameInputLength)
+            //{
+            //    passed = true;
+            //    for (int i = 0; i < usernameInputLength && passed; i++)
+            //    {
+            //        if (usernameInput[i] != dade.Username[i]) {
+            //            passed = false;
+            //        }
+            //    }
+            //    for (int i = 0; i < inputLength && passed; i++)
+            //    {
+            //        if (encryptedInputPassword[i] != dade.Password[i])
+            //        {
+            //            passed = false;
+            //        }
+            //    }
+            //}
             if (passed)
             {
                 Console.WriteLine("\nSie sind eingeloggt.");
                 // Die folgende Ausgabe dient uns nur zum Testen der Eingabe:
-                Console.WriteLine("Willkomen: " + new string(dade.Username));
+                Console.WriteLine("Willkomen: " + new string(existingUser.Username));
                 // Beim realen Anmeldevorgang wird die Eingabe sofort gelöscht:
                 inputPassword = null;
             }
@@ -97,32 +106,5 @@ class Login
             encrypted[i] = (char)((s[i ] + (char)key) % 65536);
         }
         return encrypted;
-    }
-}       
-class User
-{
-    private char[] username;
-    private char[] password;
-
-    public User()
-    {
-    }
-
-    public User(char[] username, char[] password)
-    {
-        this.username = username;
-        this.password = password;
-    }
-
-    public char[] Username
-    {
-        get { return username; }
-        set { username = value; }
-    }
-
-    public char[] Password
-    {
-        get { return password; }
-        set { password = value; }
     }
 }
