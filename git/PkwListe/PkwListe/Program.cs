@@ -108,6 +108,7 @@ namespace PkwListe
                     pkw.GetType() == tmp.GetType()
                     )
                 {
+                    deleted = true;
                     if (tmp == ersterPkw)
                     {
                         ersterPkw = tmp.GetNext();
