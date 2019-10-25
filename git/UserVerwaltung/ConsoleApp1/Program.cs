@@ -33,7 +33,11 @@ class Login
                 Console.Write("Login (L) \n");
                 Console.Write("Registrieren (R) \n");
             }
-            else Console.Write("Ausloggen (L) \n");
+            else
+            {
+                Console.Write("Ausloggen (L) \n");
+                Console.Write("Nutzer auflisten (i) \n");
+            }
             Console.Write("User löschen (D) \n");
             Console.Write("Verlassen (X) \n");
 
@@ -42,9 +46,10 @@ class Login
             {
                 while (!passed)
                 {
+                    Console.Write("\nEinloggen!");
                     Console.Write("\nUsername: ");
                     usernameInput = Console.ReadLine();
-                    Console.Write("\nPasswort: ");
+                    Console.Write("Passwort: ");
                     inputPassword = Console.ReadLine();
                     // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
                     encryptedInputPassword = Encrypt(inputPassword, key);
@@ -81,9 +86,11 @@ class Login
             }
             if (auswahl.Key == ConsoleKey.R && !passed)
             {
+
+                Console.Write("\nRegistrieren!");
                 Console.Write("\nUsername: ");
                 usernameInput = Console.ReadLine();
-                Console.Write("\nPasswort: ");
+                Console.Write("Passwort: ");
                 inputPassword = Console.ReadLine();
                 // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
                 encryptedInputPassword = Encrypt(inputPassword, key);
@@ -92,6 +99,23 @@ class Login
                 users.AddUser(newUser);
                 currentUser = newUser;
                 passed = true;
+            }
+            if (auswahl.Key == ConsoleKey.D && passed)
+            {
+                Console.Write("Passwort eingeben um Löschen des Users zu bestätigen: ");
+                inputPassword = Console.ReadLine();
+                // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                encryptedInputPassword = Encrypt(inputPassword, key);
+                if (currentUser.Password == encryptedInputPassword)
+                {
+                    users.DeleteUser(currentUser);
+                }
+            }
+            if (auswahl.Key == ConsoleKey.I)
+            {
+                Console.Write("\nCurrent Users: \n");
+                Console.Write(users.GetUserList());
+                Console.ReadKey();
             }
         }
     }
