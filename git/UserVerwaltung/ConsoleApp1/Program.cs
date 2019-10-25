@@ -6,105 +6,107 @@ class Login
 {
     public static void Main(String[] args)
     {
-        
-        char[] inputPassword = new char[50];
-        char[] encryptedRealPassword =
-        { (char)36, (char)61, (char)72, (char)72, (char)75, (char)13, (char)14, (char)15 }; 
-        char[] encryptedInputPassword;
-        char[] username =
-        { '1', '3', '3', '7'};
-        char[] usernameInput = new char[50];
+
+        string inputPassword;
+        char[] encryptedFakeRealPassword =
+        { (char)36, (char)61, (char)72, (char)72, (char)75, (char)13, (char)14, (char)15 };
+        string encryptedRealPassword = new string(encryptedFakeRealPassword);
+        string encryptedInputPassword;
+        string username = "1337";
+        string usernameInput;
         int key = 65500;
         User dade = new User(username, encryptedRealPassword);
+        User user2 = new User("Gurkensohn", Encrypt("Moin Servus Moin", key));
         UserList users = new UserList();
         users.AddUser(dade);
-        // Passwort einlesen:
+        users.AddUser(user2);
+        ConsoleKeyInfo auswahl = new ConsoleKeyInfo();
         bool passed = false;
-       
-        while (!passed)
+        User currentUser = null;
+        while (auswahl.Key != ConsoleKey.X)
         {
-            int inputLength = 0;
-            int usernameInputLength = 0;
-            ConsoleKeyInfo cki;
-            Console.Write("Username: ");
-            while ((cki = Console.ReadKey(true)).Key != ConsoleKey.Enter)
+            Console.Clear();
+            if (passed && currentUser != null) Console.WriteLine("Eingeloggt als: " + currentUser.Username);
+            Console.Write("Was wollen sie tun? \n");
+            if (!passed)
             {
-                Console.Write(cki.KeyChar);
-                usernameInput[usernameInputLength++] = cki.KeyChar;
+                Console.Write("Login (L) \n");
+                Console.Write("Registrieren (R) \n");
             }
-            Console.Write("\nPasswort: ");
-            while ((cki = Console.ReadKey(true)).Key != ConsoleKey.Enter)
-            {
-                if (cki.Key == ConsoleKey.Backspace && inputLength > 0)
-                {
-                    Console.Write("\b \b");
-                    inputPassword = inputPassword.Reverse().Skip(1).Reverse().ToArray();
-                    inputLength--;
-                }
-                else if (cki.Key != ConsoleKey.Backspace)
-                {
-                    Console.Write('*');
-                    inputPassword[inputLength++] = cki.KeyChar;
-                }
+            else Console.Write("Ausloggen (L) \n");
+            Console.Write("User löschen (D) \n");
+            Console.Write("Verlassen (X) \n");
 
+            auswahl = Console.ReadKey();
+            if (auswahl.Key == ConsoleKey.L && !passed)
+            {
+                while (!passed)
+                {
+                    Console.Write("\nUsername: ");
+                    usernameInput = Console.ReadLine();
+                    Console.Write("\nPasswort: ");
+                    inputPassword = Console.ReadLine();
+                    // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                    encryptedInputPassword = Encrypt(inputPassword, key);
+
+                    // Überprüfen ob Login Daten übereinstimmen:
+                    Console.Write(users.GetUserList());
+                    User existingUser = users.FindUser(new User(usernameInput, encryptedInputPassword));
+
+                    if (existingUser != null)
+                    {
+                        currentUser = existingUser;
+                        passed = true;
+                    }
+                   
+                    if (passed)
+                    { 
+                        inputPassword = null;
+                    }
+                    else
+                    {
+                        Console.Write("\nUsername oder Passwort Falsch! Wiederholen? Y/n \n");
+                        auswahl = Console.ReadKey();
+                        if (auswahl.Key == ConsoleKey.N)
+                        {
+                            break;
+                        } 
+                    }
+                }
             }
-            // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
-            encryptedInputPassword = Encrypt(inputPassword, inputLength, key);
-
-            // Ausgabe des Verschlüsselten Passworts
-            // Console.WriteLine(Encrypt(encryptedRealPassword, encryptedRealPassword.Length, -65500));
-
-            // Verschlüsselte Passwörter vergleichen:
-            users.GetUserList();
-            User existingUser = users.FindUser(new User(usernameInput, encryptedInputPassword));
-
-            if (existingUser != null)
+            else if (auswahl.Key == ConsoleKey.L && passed)
             {
-                Console.WriteLine("Moin");
+                currentUser = null;
+                passed = false;
+            }
+            if (auswahl.Key == ConsoleKey.R && !passed)
+            {
+                Console.Write("\nUsername: ");
+                usernameInput = Console.ReadLine();
+                Console.Write("\nPasswort: ");
+                inputPassword = Console.ReadLine();
+                // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                encryptedInputPassword = Encrypt(inputPassword, key);
+
+                User newUser = new User(usernameInput, encryptedInputPassword);
+                users.AddUser(newUser);
+                currentUser = newUser;
                 passed = true;
             }
-            //if (dade.Password.Length == inputLength && dade.Username.Length == usernameInputLength)
-            //{
-            //    passed = true;
-            //    for (int i = 0; i < usernameInputLength && passed; i++)
-            //    {
-            //        if (usernameInput[i] != dade.Username[i]) {
-            //            passed = false;
-            //        }
-            //    }
-            //    for (int i = 0; i < inputLength && passed; i++)
-            //    {
-            //        if (encryptedInputPassword[i] != dade.Password[i])
-            //        {
-            //            passed = false;
-            //        }
-            //    }
-            //}
-            if (passed)
-            {
-                Console.WriteLine("\nSie sind eingeloggt.");
-                // Die folgende Ausgabe dient uns nur zum Testen der Eingabe:
-                Console.WriteLine("Willkomen: " + new string(existingUser.Username));
-                // Beim realen Anmeldevorgang wird die Eingabe sofort gelöscht:
-                inputPassword = null;
-            }
-            else
-            {
-                Console.Write("\nUsername oder Passwort Falsch, bitte wiederholen!\n");
-            }
         }
-        Console.ReadKey(true);
     }
     // Die Methode Encrypt(char[], int length, int key) verschlüsselt die ersten length
     // Zeichen, die sich im char-Array s befinden, mit dem Schlüssel key nach der
     // einfachen Cäsar-Verschlüsselung (Modulo 65536).
-    static char[] Encrypt(char[] s, int length, int key)
+    static string Encrypt(string s, int key)
     {
-        char[] encrypted = new char[length];
-        for (int i = 0; i < length; i++)
+        char[] cs = s.ToCharArray();
+        char[] encrypted = new char[s.Length];
+        for (int i = 0; i < s.Length; i++)
         {
-            encrypted[i] = (char)((s[i ] + (char)key) % 65536);
+            encrypted[i] = (char)((cs[i ] + (char)key) % 65536);
         }
-        return encrypted;
+        string test = new string(encrypted);
+        return test;
     }
 }

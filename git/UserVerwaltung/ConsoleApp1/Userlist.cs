@@ -51,14 +51,10 @@ public class UserList
         User previousEntry = null;
         while (tmp != null)
         {
-            Console.Write("\n \n \n");
-            Console.WriteLine(user.GetUsernameAsString());
-            Console.WriteLine(tmp.GetUsernameAsString());
-            Console.WriteLine(user.GetPasswordAsString());
-            Console.WriteLine(tmp.GetPasswordAsString());
-            if ( user.GetPasswordAsString() == tmp.GetPasswordAsString() && user.GetUsernameAsString() == tmp.GetUsernameAsString() )
+            if ( user.Password == tmp.Password && user.Username == tmp.Username )
             { 
                 returnValue = tmp;
+                break;
             }
             else
             {
