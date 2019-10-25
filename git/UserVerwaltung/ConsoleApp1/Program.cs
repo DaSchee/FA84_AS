@@ -109,6 +109,8 @@ class Login
                 if (currentUser.Password == encryptedInputPassword)
                 {
                     users.DeleteUser(currentUser);
+                    currentUser = null;
+                    passed = false;
                 }
             }
             if (auswahl.Key == ConsoleKey.I)
