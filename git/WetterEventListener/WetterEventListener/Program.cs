@@ -9,12 +9,13 @@ namespace Wetter
             WetterDatenquelle wdq = new WetterDatenquelle();
             WetterApp wa = new WetterApp();
             Wetterdaten wd;
-            // Hier m�ssen unsere Eventhandler beim Herausgeber registriert
-            // werden. Oder anders ausgedr�ckt: hier abonnieren unsere
+            // Hier müssen unsere Eventhandler beim Herausgeber registriert
+            // werden. Oder anders ausgedrückt: hier abonnieren unsere
             // Eventhandler das Ereignis "Neue Wetterdaten eingetroffen".
             // ============================================================
             wdq.TrageAbonnentenEin(wa.TrageNeueWetterdatenEin);
             wdq.TrageAbonnentenEin(wa.ZeigeTemperaturverlaufAn);
+            wdq.TrageAbonnentenEin(wa.NächsteTemperaturdieBestimmtDerDurchschnittDerVorherigenIst);
             Console.WriteLine("Durch Eingabe eines Temperaturwertes wird das Ereignis\n" +
             "\"Neue Wetterdaten eingetroffen\" simuliert.\n");
             bool eingabeOK;
@@ -51,12 +52,23 @@ namespace Wetter
                 wd1.zeit.Hour, wd1.zeit.Minute, wd1.zeit.Second, wd1.temperaturwert);
             }
         }
+
+        public void NächsteTemperaturdieBestimmtDerDurchschnittDerVorherigenIst(Wetterdaten wd)
+        {
+            int wetterDatenMenge = wetterdatenListe.ToArray().Length;
+            double temperaturSumme = 0;
+            foreach (Wetterdaten wd1 in wetterdatenListe)
+            {
+                temperaturSumme += wd1.temperaturwert;
+            }
+            Console.WriteLine("Durchnittliche und Wahrscheinlich zukünftige Temperatur ist: " + temperaturSumme / wetterDatenMenge);
+        }
     }
     class WetterDatenquelle
     {
         public delegate void NeueDatenEventHandler(Wetterdaten temperaturwert);
         private NeueDatenEventHandler BenachrichtigeAlleAbonnenten;
-        // Ein Eventhandler, der als Abonnent registriert werden m�chte, muss
+        // Ein Eventhandler, der als Abonnent registriert werden möchte, muss
         // sich durch Aufruf der Funktion TrageAbonnentenEin registrieren:
         // ============================================================
         public void TrageAbonnentenEin(NeueDatenEventHandler ndeh)
