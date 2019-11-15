@@ -16,6 +16,7 @@ namespace Wetter
             wdq.TrageAbonnentenEin(wa.TrageNeueWetterdatenEin);
             wdq.TrageAbonnentenEin(wa.ZeigeTemperaturverlaufAn);
             wdq.TrageAbonnentenEin(wa.NächsteTemperaturdieBestimmtDerDurchschnittDerVorherigenIst);
+            wdq.EntferneAbonnenten(wa.ZeigeTemperaturverlaufAn);
             Console.WriteLine("Durch Eingabe eines Temperaturwertes wird das Ereignis\n" +
             "\"Neue Wetterdaten eingetroffen\" simuliert.\n");
             bool eingabeOK;
@@ -71,6 +72,11 @@ namespace Wetter
         // Ein Eventhandler, der als Abonnent registriert werden möchte, muss
         // sich durch Aufruf der Funktion TrageAbonnentenEin registrieren:
         // ============================================================
+
+        public void EntferneAbonnenten(NeueDatenEventHandler ndeh)
+        {
+            BenachrichtigeAlleAbonnenten -= ndeh;
+        }
         public void TrageAbonnentenEin(NeueDatenEventHandler ndeh)
         {
             BenachrichtigeAlleAbonnenten += ndeh;
