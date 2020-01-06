@@ -3,11 +3,10 @@ using System.Threading;
 
 namespace Fahrkartenautomat
 {
-    class Fahrkartenautomat
+    public class Fahrkartenautomat
     {
         static void Main(string[] args)
         {
-            int i;
             double zuZahlen;
             double eingezahlterGesamtbetrag = 0.0;
             double eingeworfeneMünze;
@@ -21,21 +20,50 @@ namespace Fahrkartenautomat
 
             // Eingabe
             // -------
-            Console.Write("Zu zahlender Betrag (EURO): ");
-            double.TryParse(Console.ReadLine(), out zuZahlen);
+            zuZahlen = Eingabe();
             while (eingezahlterGesamtbetrag < zuZahlen)
             {
-                Console.WriteLine("Noch zu zahlen: {0:F2} EURO", zuZahlen - eingezahlterGesamtbetrag);
-                Console.WriteLine("Eingabe (mind. 5Ct, höchstens 2 Euro): ");
-                double.TryParse(Console.ReadLine(), out eingeworfeneMünze);
+                eingeworfeneMünze = Münzeinwurf(zuZahlen, eingezahlterGesamtbetrag);
                 eingezahlterGesamtbetrag += eingeworfeneMünze;
             }
 
             // Fahrscheinausgabe
             // -----------------
+            FahrscheinDrucken();
+
+
+            // Rückgeldberechnung und -Ausgabe
+            // -------------------------------
+            rückgabebetrag = eingezahlterGesamtbetrag - zuZahlen;
+            rückgabebetrag = Rückgabe(rückgabebetrag);
+
+            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
+                              "vor Fahrtantritt stempeln zu lassen!\n" +
+                              "Wir wünschen Ihnen eine gute Fahrt.");
+            Console.ReadKey();
+        }
+        static public double Eingabe()
+        {
+            double zuZahlen;
+            Console.Write("Zu zahlender Betrag (EURO): ");
+            double.TryParse(Console.ReadLine(), out zuZahlen);
+            return zuZahlen;
+        }
+
+        static public double Münzeinwurf(double zuZahlen, double eingezahlterGesamtbetrag)
+        {
+            double eingeworfeneMünze;
+            Console.WriteLine("Noch zu zahlen: {0:F2} EURO", zuZahlen - eingezahlterGesamtbetrag);
+            Console.WriteLine("Eingabe (mind. 5Ct, höchstens 2 Euro): ");
+            double.TryParse(Console.ReadLine(), out eingeworfeneMünze);
+            return eingeworfeneMünze;
+        }
+
+        static public void FahrscheinDrucken()
+        {
             Console.WriteLine("\nFahrschein wird ausgegeben");
             //fahrscheinWirdGedruckt.Play();
-            for (i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Console.Write("/\b");
                 Thread.Sleep(125);
@@ -47,10 +75,10 @@ namespace Fahrkartenautomat
                 Thread.Sleep(125);
             }
             Console.WriteLine("\n\n");
+        }
 
-            // Rückgeldberechnung und -Ausgabe
-            // -------------------------------
-            rückgabebetrag = eingezahlterGesamtbetrag - zuZahlen;
+        static public double Rückgabe(double rückgabebetrag)
+        {
             if (rückgabebetrag > 0.0)
             {
                 Console.WriteLine("Der Rückgabebetrag in Höhe von {0:F2} EURO\n", rückgabebetrag);
@@ -93,13 +121,7 @@ namespace Fahrkartenautomat
                     rückgabebetrag -= 0.05;
                 }
             }
-
-            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
-                              "vor Fahrtantritt stempeln zu lassen!\n" +
-                              "Wir wünschen Ihnen eine gute Fahrt.");
-            Console.ReadKey();
+            return rückgabebetrag;
         }
     }
-
-
 }
