@@ -114,10 +114,15 @@ namespace Fahrkartenautomat
                     //münzeFällt.PlaySync();
                     rückgabebetrag -= 0.1;
                 }
-                while (rückgabebetrag >= 0.05)// 5 CENT-Münzen
+                while (rückgabebetrag >= 0.045)// 5 CENT-Münzen
                 {
                     Console.WriteLine("5 CENT");
                     //münzeFällt.PlaySync();
+                    if (rückgabebetrag < 0.05)
+                    {
+                        rückgabebetrag = 0;
+                        break;
+                    }
                     rückgabebetrag -= 0.05;
                 }
             }
