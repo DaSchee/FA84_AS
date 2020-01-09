@@ -14,7 +14,7 @@ namespace Fahrkartenautomat.Tests
         [TestMethod()]
         public void EingabeTest()
         {
-            Assert.Fail();
+            Fahrkartenautomat.Eingabe();
         }
 
         [TestMethod()]
