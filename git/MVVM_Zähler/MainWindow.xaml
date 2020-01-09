@@ -1,0 +1,19 @@
+﻿<Window x:Class="Zähler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MVVM-Zähler" Height="350" Width="250" ResizeMode="CanMinimize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Background="LightGoldenrodYellow"  HorizontalAlignment="Center" Margin="5,5,5,5" x:Name="lblZählerstand" Width="228" 
+               FontSize="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button Grid.Row="1" Content="Up" FontSize="48" Height="100" HorizontalAlignment="Center" Margin="0,0,0,0" Name="buttonUp" VerticalAlignment="Top" Width="228" 
+                MouseEnter="buttonUp_MouseEnter"  MouseLeave="buttonUp_MouseLeave" Click="buttonUp_Click" />
+        <Button Grid.Row="2" Content="Down" FontSize="48" Height="100" HorizontalAlignment="Center" Margin="0,0,0,0" Name="buttonDown" VerticalAlignment="Top" Width="228" 
+                MouseEnter="buttonDown_MouseEnter"  MouseLeave="buttonDown_MouseLeave" Click="buttonDown_Click" />
+    </Grid>
+</Window>
