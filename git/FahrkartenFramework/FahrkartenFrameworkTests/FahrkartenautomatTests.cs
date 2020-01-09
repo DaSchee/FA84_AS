@@ -38,6 +38,7 @@ namespace Fahrkartenautomat.Tests
         public void RückgabeTest()
         {
             Assert.AreEqual(0, Fahrkartenautomat.Rückgabe(44.75));
+            Assert.AreEqual(0.02, Fahrkartenautomat.Rückgabe(44.77));
         }
     }
 

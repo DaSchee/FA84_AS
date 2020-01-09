@@ -126,7 +126,7 @@ namespace Fahrkartenautomat
                     rückgabebetrag -= 0.05;
                 }
             }
-            return rückgabebetrag;
+            return Math.Round(rückgabebetrag, 2);
         }
     }
 }
