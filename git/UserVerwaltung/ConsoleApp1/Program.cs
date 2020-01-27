@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Linq;
 
 
@@ -14,6 +15,7 @@ class Login
         string encryptedInputPassword;
         string username = "1337";
         string usernameInput;
+        string message = "";
         int key = 65500;
         User dade = new User(username, encryptedRealPassword);
         User user2 = new User("Gurkensohn", Encrypt("Moin Servus Moin", key));
@@ -26,6 +28,11 @@ class Login
         while (auswahl.Key != ConsoleKey.X)
         {
             Console.Clear();
+            if (message != "")
+            {
+                Console.Write(message + "\n");
+                message = "";
+            }
             if (passed && currentUser != null) Console.WriteLine("Eingeloggt als: " + currentUser.Username);
             Console.Write("Was wollen sie tun? \n");
             if (!passed)
@@ -37,11 +44,21 @@ class Login
             {
                 Console.Write("Ausloggen (L) \n");
                 Console.Write("Nutzer auflisten (i) \n");
+                Console.Write("Nutzer kopieren (C) \n");
             }
             Console.Write("User löschen (D) \n");
             Console.Write("Verlassen (X) \n");
 
             auswahl = Console.ReadKey();
+            if (auswahl.Key == ConsoleKey.C && passed)
+            {
+                Console.Write("\n Nutzer zum kopieren auswählen \n");
+                Console.Write(users.GetUserList());
+                int index = GetNumber();
+                User habib = User.DeserialisiereBinär(users.FindByIndex(index).SerialisiereBinaer());
+                users.AddUser(habib);
+                message = "Nutzer: " + habib.Username + " erfolgreich kopiert!";
+            }
             if (auswahl.Key == ConsoleKey.L && !passed)
             {
                 while (!passed)
@@ -134,5 +151,17 @@ class Login
         }
         string test = new string(encrypted);
         return test;
+    }
+
+    static int GetNumber()
+    {
+        Regex isANumber = new Regex(@"^\d+$");
+        string userIndex = Console.ReadLine();
+        if (!isANumber.IsMatch(userIndex)) {
+            return GetNumber();
+        } else
+        {
+            return Convert.ToInt32(userIndex);
+        }
     }
 }

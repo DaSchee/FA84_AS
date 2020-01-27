@@ -1,4 +1,7 @@
-﻿public class User
+﻿using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+public class User
 {
     private string username;
     private string password;
@@ -23,5 +26,32 @@
     {
         get { return password; }
         set { password = value; }
+    }
+
+    public byte[] SerialisiereBinaer()
+    {
+        using (MemoryStream m = new MemoryStream())
+        {
+            using (BinaryWriter writer = new BinaryWriter(m))
+            {
+                writer.Write(Username);
+                writer.Write(Password);
+            }
+            return m.ToArray();
+        }
+    }
+
+    public static User DeserialisiereBinär(byte[] byteArray)
+    {
+        User result = new User();
+        using (MemoryStream m = new MemoryStream(byteArray))
+        {
+            using (BinaryReader reader = new BinaryReader(m))
+            {
+                result.Username = reader.ReadString();
+                result.Password = reader.ReadString();
+            }
+        }
+        return result;
     }
 }

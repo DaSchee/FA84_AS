@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 
 public class UserList
 {
@@ -36,12 +36,30 @@ public class UserList
     {
         User tmp = firstUser;
         string selectString = "";
+        int index = 0;
         while (tmp != null)
         {
-            selectString += tmp.Username + "\n";
+            selectString += index + ": " + tmp.Username + "\n";
+            index += 1;
             tmp = tmp.next;
         }
         return selectString;
+    }
+
+    public User FindByIndex(int index)
+    {
+        User tmp = firstUser;
+        int count = 0;
+        while (tmp != null)
+        {
+            if (count == index)
+            {
+                return tmp;
+            }
+            count++;
+            tmp = tmp.next;
+        }
+        return null;
     }
 
     public User FindUser(User user)
