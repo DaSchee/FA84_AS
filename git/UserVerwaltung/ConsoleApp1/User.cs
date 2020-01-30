@@ -48,10 +48,18 @@ public class User
         {
             using (BinaryReader reader = new BinaryReader(m))
             {
-                result.Username = reader.ReadString();
-                result.Password = reader.ReadString();
+                result = DeserialisiereBinärMitReader(reader);
+                reader.Close();
             }
         }
+        return result;
+    }
+
+    public static User DeserialisiereBinärMitReader(BinaryReader reader)
+    {
+        User result = new User();
+        result.Username = reader.ReadString();
+        result.Password = reader.ReadString();
         return result;
     }
 }

@@ -46,15 +46,22 @@ class Login
                 Console.Write("Nutzer auflisten (i) \n");
                 Console.Write("Nutzer kopieren (C) \n");
             }
+            Console.Write("Nutzerliste Exportieren (E) \n");
             Console.Write("User löschen (D) \n");
             Console.Write("Verlassen (X) \n");
 
             auswahl = Console.ReadKey();
+            if (auswahl.Key == ConsoleKey.E)
+            {
+                users.saveToFile("test.txt");
+                message = "Saved To File!";
+            }
             if (auswahl.Key == ConsoleKey.C && passed)
             {
                 Console.Write("\n Nutzer zum kopieren auswählen \n");
                 Console.Write(users.GetUserList());
                 int index = GetNumber();
+                Console.Write("byte Array Length: " + users.FindByIndex(index).SerialisiereBinaer().Length + "\n");
                 User habib = User.DeserialisiereBinär(users.FindByIndex(index).SerialisiereBinaer());
                 users.AddUser(habib);
                 message = "Nutzer: " + habib.Username + " erfolgreich kopiert!";

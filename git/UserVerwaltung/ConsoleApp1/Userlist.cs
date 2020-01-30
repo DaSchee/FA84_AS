@@ -1,4 +1,5 @@
 ﻿ using System;
+using System.IO;
 
 public class UserList
 {
@@ -130,5 +131,46 @@ public class UserList
             Console.Write("List doesn't contain the Object you wish to Delete \n");
         }
         Console.Write(GetUserList());
+    }
+
+    public bool saveToFile(string path)
+    {
+        User tmp = firstUser;
+        byte[] tmpToByte;
+        FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+        BinaryWriter bw = new BinaryWriter(fs);
+        try
+        {
+            while (tmp != null)
+            {
+                tmpToByte = tmp.SerialisiereBinaer();
+                bw.Write(tmpToByte);
+                tmp = tmp.next;
+            }
+        }
+        finally
+        {
+            bw.Close();
+            fs.Close();
+        }
+        return true;
+    }
+
+    public UserList importFromFile(string path)
+    {
+        UserList newList = new UserList();
+        User re;
+        FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
+        BinaryReader br = new BinaryReader(fs);
+        do
+        {
+            re = User.DeserialisiereBinärMitReader(br);
+            if (re != null)
+            {
+                newList.AddUser(re);
+            }
+        } while (re != null);
+        //TODO lololol
+        return newList;
     }
 }
