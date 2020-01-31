@@ -55,8 +55,8 @@ class Login
                     UserList tempUsers = UserList.importFromFile(filepath);
                     if (tempUsers != null)
                     {
-                        Console.WriteLine();
-                        users = tempUsers;
+                        HandleImportedUsers(tempUsers, users);
+                      
                     } else
                     {
                         message = "Fehler beim importieren aus Datei bitte Dateipfad überprüfen!";
@@ -201,6 +201,30 @@ class Login
         } else
         {
             return "test.txt";
+        }
+    }
+
+    static UserList HandleImportedUsers(UserList newUsers, UserList oldUsers)
+    {
+        UserList users = new UserList();
+        ConsoleKeyInfo select;
+        User tmp = newUsers.FindByIndex(0);
+        Console.WriteLine("Aktuelle Nutzer durch Import ersetzen? (Y/n)");
+        select = Console.ReadKey();
+        if (select.Key == ConsoleKey.Y)
+        {
+            users = newUsers;
+            return users;
+        }
+        else
+        {
+            while (tmp != null)
+            {
+                oldUsers.AddUser(User.DeserialisiereBinär(tmp.SerialisiereBinaer()));
+                tmp = tmp.next;
+            }
+            users = oldUsers;
+            return users;
         }
     }
 }

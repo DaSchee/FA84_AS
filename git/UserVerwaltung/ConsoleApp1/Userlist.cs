@@ -160,16 +160,24 @@ public class UserList
     {
         UserList newList = new UserList();
         User re;
-        FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
-        BinaryReader br = new BinaryReader(fs);
-        do
+        try
         {
-            re = User.DeserialisiereBinärMitReader(br);
-            if (re != null)
+            FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+            do
             {
-                newList.AddUser(re);
-            }
-        } while (re != null);
+                re = User.DeserialisiereBinärMitReader(br);
+                if (re != null)
+                {
+                    newList.AddUser(re);
+                }
+            } while (re != null);
+            br.Close();
+            fs.Close();
+        } catch
+        {
+            return null;
+        }
         return newList;
     }
 }
