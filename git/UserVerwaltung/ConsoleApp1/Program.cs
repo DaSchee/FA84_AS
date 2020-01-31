@@ -51,97 +51,105 @@ class Login
             Console.Write("Verlassen (X) \n");
 
             auswahl = Console.ReadKey();
-            if (auswahl.Key == ConsoleKey.E)
+            switch (auswahl.Key)
             {
-                users.saveToFile("test.txt");
-                message = "Saved To File!";
-            }
-            if (auswahl.Key == ConsoleKey.C && passed)
-            {
-                Console.Write("\n Nutzer zum kopieren auswählen \n");
-                Console.Write(users.GetUserList());
-                int index = GetNumber();
-                Console.Write("byte Array Length: " + users.FindByIndex(index).SerialisiereBinaer().Length + "\n");
-                User habib = User.DeserialisiereBinär(users.FindByIndex(index).SerialisiereBinaer());
-                users.AddUser(habib);
-                message = "Nutzer: " + habib.Username + " erfolgreich kopiert!";
-            }
-            if (auswahl.Key == ConsoleKey.L && !passed)
-            {
-                while (!passed)
-                {
-                    Console.Write("\nEinloggen!");
-                    Console.Write("\nUsername: ");
-                    usernameInput = Console.ReadLine();
-                    Console.Write("Passwort: ");
-                    inputPassword = Console.ReadLine();
-                    // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
-                    encryptedInputPassword = Encrypt(inputPassword, key);
-
-                    // Überprüfen ob Login Daten übereinstimmen:
-                    Console.Write(users.GetUserList());
-                    User existingUser = users.FindUser(new User(usernameInput, encryptedInputPassword));
-
-                    if (existingUser != null)
-                    {
-                        currentUser = existingUser;
-                        passed = true;
-                    }
-                   
+                case ConsoleKey.E:
+                    users.saveToFile("test.txt");
+                    message = "Saved To File!";
+                    break;
+                case ConsoleKey.C:
                     if (passed)
-                    { 
-                        inputPassword = null;
+                    {
+                        Console.Write("\n Nutzer zum kopieren auswählen \n");
+                        Console.Write(users.GetUserList());
+                        int index = GetNumber();
+                        Console.Write("byte Array Length: " + users.FindByIndex(index).SerialisiereBinaer().Length + "\n");
+                        User habib = User.DeserialisiereBinär(users.FindByIndex(index).SerialisiereBinaer());
+                        users.AddUser(habib);
+                        message = "Nutzer: " + habib.Username + " erfolgreich kopiert!";
+                    }
+                    break;
+                case ConsoleKey.L:
+                    if (!passed)
+                    {
+                        while (!passed)
+                        {
+                            Console.Write("\nEinloggen!");
+                            Console.Write("\nUsername: ");
+                            usernameInput = Console.ReadLine();
+                            Console.Write("Passwort: ");
+                            inputPassword = Console.ReadLine();
+                            // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                            encryptedInputPassword = Encrypt(inputPassword, key);
+
+                            // Überprüfen ob Login Daten übereinstimmen:
+                            Console.Write(users.GetUserList());
+                            User existingUser = users.FindUser(new User(usernameInput, encryptedInputPassword));
+
+                            if (existingUser != null)
+                            {
+                                currentUser = existingUser;
+                                passed = true;
+                            }
+
+                            if (passed)
+                            {
+                                inputPassword = null;
+                            }
+                            else
+                            {
+                                Console.Write("\nUsername oder Passwort Falsch! Wiederholen? Y/n \n");
+                                auswahl = Console.ReadKey();
+                                if (auswahl.Key == ConsoleKey.N)
+                                {
+                                    break;
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        Console.Write("\nUsername oder Passwort Falsch! Wiederholen? Y/n \n");
-                        auswahl = Console.ReadKey();
-                        if (auswahl.Key == ConsoleKey.N)
-                        {
-                            break;
-                        } 
+                        currentUser = null;
+                        passed = false;
                     }
-                }
-            }
-            else if (auswahl.Key == ConsoleKey.L && passed)
-            {
-                currentUser = null;
-                passed = false;
-            }
-            if (auswahl.Key == ConsoleKey.R && !passed)
-            {
+                    break;
+                case ConsoleKey.R:
+                    if (!passed)
+                    {
+                        Console.Write("\nRegistrieren!");
+                        Console.Write("\nUsername: ");
+                        usernameInput = Console.ReadLine();
+                        Console.Write("Passwort: ");
+                        inputPassword = Console.ReadLine();
+                        // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                        encryptedInputPassword = Encrypt(inputPassword, key);
 
-                Console.Write("\nRegistrieren!");
-                Console.Write("\nUsername: ");
-                usernameInput = Console.ReadLine();
-                Console.Write("Passwort: ");
-                inputPassword = Console.ReadLine();
-                // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
-                encryptedInputPassword = Encrypt(inputPassword, key);
-
-                User newUser = new User(usernameInput, encryptedInputPassword);
-                users.AddUser(newUser);
-                currentUser = newUser;
-                passed = true;
-            }
-            if (auswahl.Key == ConsoleKey.D && passed)
-            {
-                Console.Write("Passwort eingeben um Löschen des Users zu bestätigen: ");
-                inputPassword = Console.ReadLine();
-                // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
-                encryptedInputPassword = Encrypt(inputPassword, key);
-                if (currentUser.Password == encryptedInputPassword)
-                {
-                    users.DeleteUser(currentUser);
-                    currentUser = null;
-                    passed = false;
-                }
-            }
-            if (auswahl.Key == ConsoleKey.I)
-            {
-                Console.Write("\nCurrent Users: \n");
-                Console.Write(users.GetUserList());
-                Console.ReadKey();
+                        User newUser = new User(usernameInput, encryptedInputPassword);
+                        users.AddUser(newUser);
+                        currentUser = newUser;
+                        passed = true;
+                    }
+                    break;
+                case ConsoleKey.D:
+                    if (passed)
+                    {
+                        Console.Write("Passwort eingeben um Löschen des Users zu bestätigen: ");
+                        inputPassword = Console.ReadLine();
+                        // Eingelesenes Passwort durch Aufruf der Funktion Encrypt verschlüsseln:
+                        encryptedInputPassword = Encrypt(inputPassword, key);
+                        if (currentUser.Password == encryptedInputPassword)
+                        {
+                            users.DeleteUser(currentUser);
+                            currentUser = null;
+                            passed = false;
+                        }
+                    }
+                    break;
+                case ConsoleKey.I:
+                    Console.Write("\nCurrent Users: \n");
+                    Console.Write(users.GetUserList());
+                    Console.ReadKey();
+                    break;
             }
         }
     }

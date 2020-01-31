@@ -170,7 +170,6 @@ public class UserList
                 newList.AddUser(re);
             }
         } while (re != null);
-        //TODO lololol
         return newList;
     }
 }
