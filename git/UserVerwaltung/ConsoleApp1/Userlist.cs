@@ -1,7 +1,8 @@
 ﻿ using System;
 using System.IO;
+using System.Runtime.Serialization;
 
-public class UserList
+public class UserList : ISerializable
 {
     private User firstUser;
     private User lastUser;
@@ -31,6 +32,13 @@ public class UserList
         }
         userCount++;
         return newUser;
+    }
+
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        // Use the AddValue method to specify serialized values.
+        info.AddValue("firstUser", firstUser, typeof(User));
+        info.AddValue("count", userCount, typeof(int));
     }
 
     public string GetUserList()
@@ -179,5 +187,19 @@ public class UserList
             return null;
         }
         return newList;
+    }
+
+    public static void SerializeItem(string fileName, UserList list , IFormatter formatter)
+    {
+        FileStream s = new FileStream(fileName, FileMode.Create);
+        formatter.Serialize(s, list);
+        s.Close();
+    }
+
+    public static UserList DeserializeItem(string fileName, IFormatter formatter)
+    {
+        FileStream s = new FileStream(fileName, FileMode.Open);
+        UserList list = (UserList)formatter.Deserialize(s);
+        return list;
     }
 }
