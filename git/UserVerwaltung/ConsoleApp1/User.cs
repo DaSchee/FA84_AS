@@ -57,9 +57,15 @@ public class User
 
     public static User DeserialisiereBinärMitReader(BinaryReader reader)
     {
-        User result = new User();
-        result.Username = reader.ReadString();
-        result.Password = reader.ReadString();
-        return result;
+        try
+        {
+            User result = new User();
+            result.Username = reader.ReadString();
+            result.Password = reader.ReadString();
+            return result;
+        } catch
+        {
+            return null;
+        }
     }
 }

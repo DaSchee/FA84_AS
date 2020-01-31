@@ -13,15 +13,11 @@ class Login
         { (char)36, (char)61, (char)72, (char)72, (char)75, (char)13, (char)14, (char)15 };
         string encryptedRealPassword = new string(encryptedFakeRealPassword);
         string encryptedInputPassword;
-        string username = "1337";
         string usernameInput;
         string message = "";
+        string filepath;
         int key = 65500;
-        User dade = new User(username, encryptedRealPassword);
-        User user2 = new User("Gurkensohn", Encrypt("Moin Servus Moin", key));
         UserList users = new UserList();
-        users.AddUser(dade);
-        users.AddUser(user2);
         ConsoleKeyInfo auswahl = new ConsoleKeyInfo();
         bool passed = false;
         User currentUser = null;
@@ -43,18 +39,32 @@ class Login
             else
             {
                 Console.Write("Ausloggen (L) \n");
-                Console.Write("Nutzer auflisten (i) \n");
                 Console.Write("Nutzer kopieren (C) \n");
             }
+            Console.Write("Nutzer auflisten (i) \n");
             Console.Write("Nutzerliste Exportieren (E) \n");
+            Console.Write("Nutzerliste aus Datei Importieren (F) \n");
             Console.Write("User löschen (D) \n");
             Console.Write("Verlassen (X) \n");
 
             auswahl = Console.ReadKey();
             switch (auswahl.Key)
             {
+                case ConsoleKey.F:
+                    filepath = GetFilePath();
+                    UserList tempUsers = UserList.importFromFile(filepath);
+                    if (tempUsers != null)
+                    {
+                        Console.WriteLine();
+                        users = tempUsers;
+                    } else
+                    {
+                        message = "Fehler beim importieren aus Datei bitte Dateipfad überprüfen!";
+                    }
+                    break;
                 case ConsoleKey.E:
-                    users.saveToFile("test.txt");
+                    filepath = GetFilePath();
+                    users.saveToFile(filepath);
                     message = "Saved To File!";
                     break;
                 case ConsoleKey.C:
@@ -177,6 +187,20 @@ class Login
         } else
         {
             return Convert.ToInt32(userIndex);
+        }
+    }
+
+    static string GetFilePath()
+    {
+        string filepath;
+        Console.Write("\n Dateipfad angeben \n");
+        filepath = Console.ReadLine();
+        if (filepath != "")
+        {
+            return filepath;
+        } else
+        {
+            return "test.txt";
         }
     }
 }

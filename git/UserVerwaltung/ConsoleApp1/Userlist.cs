@@ -137,7 +137,7 @@ public class UserList
     {
         User tmp = firstUser;
         byte[] tmpToByte;
-        FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+        FileStream fs = File.Create(path);
         BinaryWriter bw = new BinaryWriter(fs);
         try
         {
@@ -156,7 +156,7 @@ public class UserList
         return true;
     }
 
-    public UserList importFromFile(string path)
+    public static UserList importFromFile(string path)
     {
         UserList newList = new UserList();
         User re;
