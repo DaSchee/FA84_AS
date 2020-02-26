@@ -3,14 +3,18 @@ using System.Threading;
 
 namespace Fahrkartenautomat
 {
+    enum state {WAITING, ACCEPTING, PRINTING, PAYBACK};
     public class Fahrkartenautomat
     {
+        double zuZahlen;
+        double eingezahlterGesamtbetrag = 0.0;
+        double eingeworfeneMünze;
+        double rückgabebetrag;
+
         static void Main(string[] args)
         {
-            double zuZahlen;
-            double eingezahlterGesamtbetrag = 0.0;
-            double eingeworfeneMünze;
-            double rückgabebetrag;
+            state activeState = state.WAITING;
+            Fahrkartenautomat automat = new Fahrkartenautomat();
             // Die Sound-Dateien werden in dem Verzeichnis erwartet, 
             // in dem sich diese Quelltextdatei befindet.
             //System.Media.SoundPlayer münzeFällt = 
@@ -20,27 +24,25 @@ namespace Fahrkartenautomat
 
             // Eingabe
             // -------
-            zuZahlen = Eingabe();
-            while (eingezahlterGesamtbetrag < zuZahlen)
+            while (true)
             {
-                eingeworfeneMünze = Münzeinwurf(zuZahlen, eingezahlterGesamtbetrag);
-                eingezahlterGesamtbetrag += eingeworfeneMünze;
+                switch (activeState)
+                {
+                    case state.WAITING:
+                        automat.Reset();
+                        activeState = automat.SelectTicket();
+                        break;
+                    case state.ACCEPTING:
+                        activeState = automat.Pay();
+                        break;
+                    case state.PRINTING:
+                        activeState = FahrscheinDrucken();
+                        break;
+                    case state.PAYBACK:
+                        activeState = automat.Payback();
+                        break;
+                }
             }
-
-            // Fahrscheinausgabe
-            // -----------------
-            FahrscheinDrucken();
-
-
-            // Rückgeldberechnung und -Ausgabe
-            // -------------------------------
-            rückgabebetrag = eingezahlterGesamtbetrag - zuZahlen;
-            rückgabebetrag = Rückgabe(rückgabebetrag);
-
-            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
-                              "vor Fahrtantritt stempeln zu lassen!\n" +
-                              "Wir wünschen Ihnen eine gute Fahrt.");
-            Console.ReadKey();
         }
         static public double Eingabe()
         {
@@ -48,6 +50,12 @@ namespace Fahrkartenautomat
             Console.Write("Zu zahlender Betrag (EURO): ");
             double.TryParse(Console.ReadLine(), out zuZahlen);
             return zuZahlen;
+        }
+
+        private state SelectTicket()
+        {
+            zuZahlen = Eingabe();
+            return state.ACCEPTING;
         }
 
         static public double Münzeinwurf(double zuZahlen, double eingezahlterGesamtbetrag)
@@ -59,7 +67,17 @@ namespace Fahrkartenautomat
             return eingeworfeneMünze;
         }
 
-        static public void FahrscheinDrucken()
+        private state Pay()
+        {
+            while (eingezahlterGesamtbetrag < zuZahlen)
+            {
+                eingeworfeneMünze = Münzeinwurf(zuZahlen, eingezahlterGesamtbetrag);
+                eingezahlterGesamtbetrag += eingeworfeneMünze;
+            }
+            return state.PRINTING;
+        }
+
+        static private state FahrscheinDrucken()
         {
             Console.WriteLine("\nFahrschein wird ausgegeben");
             //fahrscheinWirdGedruckt.Play();
@@ -75,6 +93,20 @@ namespace Fahrkartenautomat
                 Thread.Sleep(125);
             }
             Console.WriteLine("\n\n");
+            return state.PAYBACK;
+        }
+
+        private state Payback()
+        {
+            rückgabebetrag = eingezahlterGesamtbetrag - zuZahlen;
+            rückgabebetrag = Rückgabe(rückgabebetrag);
+
+            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
+                              "vor Fahrtantritt stempeln zu lassen!\n" +
+                              "Wir wünschen Ihnen eine gute Fahrt.");
+            Console.ReadKey();
+
+            return state.WAITING;
         }
 
         static public double Rückgabe(double rückgabebetrag)
@@ -128,5 +160,15 @@ namespace Fahrkartenautomat
             }
             return Math.Round(rückgabebetrag, 2);
         }
+        private void Reset()
+        {
+            Console.Clear();
+            zuZahlen = 0;
+            eingezahlterGesamtbetrag = 0.0;
+            eingeworfeneMünze = 0;
+            rückgabebetrag = 0;
+        }
+
     }
+
 }
