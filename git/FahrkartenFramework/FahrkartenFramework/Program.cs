@@ -22,8 +22,6 @@ namespace Fahrkartenautomat
             //System.Media.SoundPlayer fahrscheinWirdGedruckt =
             //    new System.Media.SoundPlayer(@"..\..\printer-dotmatrix-01.wav");
 
-            // Eingabe
-            // -------
             while (true)
             {
                 switch (activeState)
@@ -47,6 +45,7 @@ namespace Fahrkartenautomat
         static public double Eingabe()
         {
             double zuZahlen;
+            Console.Clear();
             Console.Write("Zu zahlender Betrag (EURO): ");
             double.TryParse(Console.ReadLine(), out zuZahlen);
             return zuZahlen;
@@ -54,16 +53,29 @@ namespace Fahrkartenautomat
 
         private state SelectTicket()
         {
-            zuZahlen = Eingabe();
+            while (zuZahlen == 0)
+            {                
+                zuZahlen = Eingabe();
+            }
             return state.ACCEPTING;
         }
 
         static public double Münzeinwurf(double zuZahlen, double eingezahlterGesamtbetrag)
         {
-            double eingeworfeneMünze;
+            bool correctInput = false;
+            double eingeworfeneMünze = 0;
             Console.WriteLine("Noch zu zahlen: {0:F2} EURO", zuZahlen - eingezahlterGesamtbetrag);
-            Console.WriteLine("Eingabe (mind. 5Ct, höchstens 2 Euro): ");
-            double.TryParse(Console.ReadLine(), out eingeworfeneMünze);
+            while (!correctInput)
+            {
+                Console.WriteLine("Eingabe (mind. 5Ct, höchstens 20 Euro): ");
+                double.TryParse(Console.ReadLine(), out eingeworfeneMünze);
+                if (eingeworfeneMünze >= 0.05 && eingeworfeneMünze <= 20)
+                {
+                    correctInput = true;
+                    break;
+                }
+                Console.WriteLine("Falsche Münze/Schein!");
+            }
             return eingeworfeneMünze;
         }
 
