@@ -1,45 +1,23 @@
 ﻿using System;
 using System.Threading;
 
-namespace Fahrkartenautomat
+namespace FahrkartenFramework
 {
-    enum state {WAITING, ACCEPTING, PRINTING, PAYBACK};
     public class Fahrkartenautomat
     {
-        double zuZahlen;
-        double eingezahlterGesamtbetrag = 0.0;
-        double eingeworfeneMünze;
-        double rückgabebetrag;
+        public double zuZahlen;
+        public double eingezahlterGesamtbetrag = 0.0;
+        public double eingeworfeneMünze;
+        public double rückgabebetrag;
 
         static void Main(string[] args)
         {
-            state activeState = state.WAITING;
             Fahrkartenautomat automat = new Fahrkartenautomat();
-            // Die Sound-Dateien werden in dem Verzeichnis erwartet, 
-            // in dem sich diese Quelltextdatei befindet.
-            //System.Media.SoundPlayer münzeFällt = 
-            //    new System.Media.SoundPlayer(@"..\..\coin-drop-1.wav");
-            //System.Media.SoundPlayer fahrscheinWirdGedruckt =
-            //    new System.Media.SoundPlayer(@"..\..\printer-dotmatrix-01.wav");
+            State currentState = new WaitingState(automat);
 
             while (true)
             {
-                switch (activeState)
-                {
-                    case state.WAITING:
-                        automat.Reset();
-                        activeState = automat.SelectTicket();
-                        break;
-                    case state.ACCEPTING:
-                        activeState = automat.Pay();
-                        break;
-                    case state.PRINTING:
-                        activeState = FahrscheinDrucken();
-                        break;
-                    case state.PAYBACK:
-                        activeState = automat.Payback();
-                        break;
-                }
+                currentState = currentState.Handle();
             }
         }
         static public double Eingabe()
@@ -49,15 +27,6 @@ namespace Fahrkartenautomat
             Console.Write("Zu zahlender Betrag (EURO): ");
             double.TryParse(Console.ReadLine(), out zuZahlen);
             return zuZahlen;
-        }
-
-        private state SelectTicket()
-        {
-            while (zuZahlen == 0)
-            {                
-                zuZahlen = Eingabe();
-            }
-            return state.ACCEPTING;
         }
 
         static public double Münzeinwurf(double zuZahlen, double eingezahlterGesamtbetrag)
@@ -79,17 +48,7 @@ namespace Fahrkartenautomat
             return eingeworfeneMünze;
         }
 
-        private state Pay()
-        {
-            while (eingezahlterGesamtbetrag < zuZahlen)
-            {
-                eingeworfeneMünze = Münzeinwurf(zuZahlen, eingezahlterGesamtbetrag);
-                eingezahlterGesamtbetrag += eingeworfeneMünze;
-            }
-            return state.PRINTING;
-        }
-
-        static private state FahrscheinDrucken()
+        static public void FahrscheinDrucken()
         {
             Console.WriteLine("\nFahrschein wird ausgegeben");
             //fahrscheinWirdGedruckt.Play();
@@ -105,20 +64,6 @@ namespace Fahrkartenautomat
                 Thread.Sleep(125);
             }
             Console.WriteLine("\n\n");
-            return state.PAYBACK;
-        }
-
-        private state Payback()
-        {
-            rückgabebetrag = eingezahlterGesamtbetrag - zuZahlen;
-            rückgabebetrag = Rückgabe(rückgabebetrag);
-
-            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
-                              "vor Fahrtantritt stempeln zu lassen!\n" +
-                              "Wir wünschen Ihnen eine gute Fahrt.");
-            Console.ReadKey();
-
-            return state.WAITING;
         }
 
         static public double Rückgabe(double rückgabebetrag)
@@ -172,7 +117,7 @@ namespace Fahrkartenautomat
             }
             return Math.Round(rückgabebetrag, 2);
         }
-        private void Reset()
+        public void Reset()
         {
             Console.Clear();
             zuZahlen = 0;
