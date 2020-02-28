@@ -9,6 +9,7 @@ namespace FahrkartenFramework
         public double eingezahlterGesamtbetrag = 0.0;
         public double eingeworfeneMünze;
         public double rückgabebetrag;
+        public bool abbruch = false;
 
         static void Main(string[] args)
         {
@@ -27,25 +28,6 @@ namespace FahrkartenFramework
             Console.Write("Zu zahlender Betrag (EURO): ");
             double.TryParse(Console.ReadLine(), out zuZahlen);
             return zuZahlen;
-        }
-
-        static public double Münzeinwurf(double zuZahlen, double eingezahlterGesamtbetrag)
-        {
-            bool correctInput = false;
-            double eingeworfeneMünze = 0;
-            Console.WriteLine("Noch zu zahlen: {0:F2} EURO", zuZahlen - eingezahlterGesamtbetrag);
-            while (!correctInput)
-            {
-                Console.WriteLine("Eingabe (mind. 5Ct, höchstens 20 Euro): ");
-                double.TryParse(Console.ReadLine(), out eingeworfeneMünze);
-                if (eingeworfeneMünze >= 0.05 && eingeworfeneMünze <= 20)
-                {
-                    correctInput = true;
-                    break;
-                }
-                Console.WriteLine("Falsche Münze/Schein!");
-            }
-            return eingeworfeneMünze;
         }
 
         static public void FahrscheinDrucken()
@@ -124,6 +106,7 @@ namespace FahrkartenFramework
             eingezahlterGesamtbetrag = 0.0;
             eingeworfeneMünze = 0;
             rückgabebetrag = 0;
+            abbruch = false;
         }
 
     }

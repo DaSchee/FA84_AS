@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace FahrkartenFramework
 {
     class PaybackState : State
@@ -18,12 +19,25 @@ namespace FahrkartenFramework
 
         private void Payback()
         {
-            automat.rückgabebetrag = automat.eingezahlterGesamtbetrag - automat.zuZahlen;
+            if (automat.abbruch)
+            {
+                automat.rückgabebetrag = automat.eingezahlterGesamtbetrag;
+            }
+            else
+            {
+                automat.rückgabebetrag = automat.eingezahlterGesamtbetrag - automat.zuZahlen;
+            }
             automat.rückgabebetrag = Fahrkartenautomat.Rückgabe(automat.rückgabebetrag);
-
-            Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
-                              "vor Fahrtantritt stempeln zu lassen!\n" +
-                              "Wir wünschen Ihnen eine gute Fahrt.");
+            if (automat.abbruch)
+            {
+                Console.WriteLine("\nZahlungsvorgang abgebrochen!");
+            }
+            else
+            {
+                Console.WriteLine("\nVergessen Sie nicht, den Fahrschein\n" +
+                                  "vor Fahrtantritt stempeln zu lassen!\n" +
+                                  "Wir wünschen Ihnen eine gute Fahrt.");
+            }
             Console.ReadKey();
         }
     }
